@@ -3,8 +3,8 @@ library(ggplot2)
 library(officer)
 library(rvg)
 library(ggplotify)
-#table2dataframe
-library(psych)
+library(tidyverse)
+library(lubridate)
 
 ###Ácaro Hindú
 #Reading the data
@@ -212,98 +212,22 @@ mean_by_citrus_type<- as.data.frame(table(acaro_2020$OTROS.ACAROS, acaro_2020$CU
 names(mean_by_citrus_type)<- c("Severidad", "Cultivar", "Fecha", "Frecuencia")
 mean_by_citrus_type$Fecha<- as.Date(mean_by_citrus_type$Fecha)
 
+mean_by_citrus_type2 <- mean_by_citrus_type %>% 
+  group_by(FECHA = floor_date(Fecha, unit = "month"))%>%
+  summarize(Frecuencia = sum(Frecuencia),  Severidad= Severidad, Cultivar=
+              Cultivar)
 
-a<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=Frecuencia, group=Cultivar, fill=Cultivar, alpha=Severidad)) + 
+
+
+
+#Figure
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type2, aes(x=Fecha, y=Frecuencia, group=Cultivar, fill=Cultivar, alpha=Severidad)) + 
       geom_bar(stat="identity",position="dodge", colour="black") +
-      theme(axis.text.x=element_text(angle=60, hjust=1))+
-      scale_x_date(date_breaks = "2 weeks")+
       scale_alpha_manual(values=c(0,0.25, 0.5, 0.75, 1))
-     
-
-
-
-figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Número de Huevos Promedio por Hoja`, group=Variedad))+
-  geom_line(aes(linetype=Variedad))+
-  geom_point(aes(shape=Variedad))+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 45))
 #save as PPT
 p_dml <-dml(ggobj = figure_mean_by_citrus_type)
 read_pptx() %>%
   add_slide() %>%
   ph_with(p_dml, ph_location()) %>%
-  base::print("1. figure_mean_by_citrus_type.pptx")
-
-
-#Get mean values per rootstock and sample (date). Contongency table
-mean_by_citrus_type<- aggregate(acaro_2020$HUEVO.ACARO.HINDU, list(acaro_2020$PORTAINJERTO, acaro_2020$Fecha), mean, na.rm=T)
-#set names of mean_by_citrus_type
-names(mean_by_citrus_type)<- c("Porta Injerto", "Fecha", "Número de Huevos Promedio por Hoja")
-figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Número de Huevos Promedio por Hoja`, group=`Porta Injerto`))+
-  geom_line(aes(linetype=`Porta Injerto`))+
-  geom_point(aes(shape=`Porta Injerto`))+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 45))
-#save as PPT
-p_dml <-dml(ggobj = figure_mean_by_citrus_type)
-read_pptx() %>%
-  add_slide() %>%
-  ph_with(p_dml, ph_location()) %>%
-  base::print("2. figure_mean_by_rootstock.pptx")
-
-
-#Get mean values per variety per citrus type and sample (date). Contongency table
-mean_by_citrus_type<- acaro_2020%>%
-  filter(CULTIVAR=="Naranja")
-mean_by_citrus_type<- aggregate(mean_by_citrus_type$HUEVO.ACARO.HINDU, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
-#set names of mean_by_citrus_type
-names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Número de Huevos Promedio por Hoja")
-figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Número de Huevos Promedio por Hoja`, group=Variedad))+
-  geom_line(aes(color=Variedad))+
-  geom_point(aes(color=Variedad))+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 45))
-#save as PPT
-p_dml <-dml(ggobj = figure_mean_by_citrus_type)
-read_pptx() %>%
-  add_slide() %>%
-  ph_with(p_dml, ph_location()) %>%
-  base::print("3. figure_mean_by_variety_Oranges.pptx")
-
-#Get mean values per variety per citrus type and sample (date). Contongency table
-mean_by_citrus_type<- acaro_2020%>%
-  filter(CULTIVAR=="Mandarina")
-mean_by_citrus_type<- aggregate(mean_by_citrus_type$HUEVO.ACARO.HINDU, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
-#set names of mean_by_citrus_type
-names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Número de Huevos Promedio por Hoja")
-figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Número de Huevos Promedio por Hoja`, group=Variedad))+
-  geom_line(aes(color=Variedad))+
-  geom_point(aes(color=Variedad))+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 45))
-#save as PPT
-p_dml <-dml(ggobj = figure_mean_by_citrus_type)
-read_pptx() %>%
-  add_slide() %>%
-  ph_with(p_dml, ph_location()) %>%
-  base::print("4. figure_mean_by_variety_Tangerines.pptx")
-
-#Get mean values per variety per citrus type and sample (date). Contongency table
-mean_by_citrus_type<- acaro_2020%>%
-  filter(CULTIVAR=="Limón")
-mean_by_citrus_type<- aggregate(mean_by_citrus_type$HUEVO.ACARO.HINDU, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
-#set names of mean_by_citrus_type
-names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Número de Huevos Promedio por Hoja")
-figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Número de Huevos Promedio por Hoja`, group=Variedad))+
-  geom_line(aes(color=Variedad))+
-  geom_point(aes(color=Variedad))+
-  theme_classic()+
-  theme(axis.text.x = element_text(angle = 45))
-#save as PPT
-p_dml <-dml(ggobj = figure_mean_by_citrus_type)
-read_pptx() %>%
-  add_slide() %>%
-  ph_with(p_dml, ph_location()) %>%
-  base::print("5. figure_mean_by_variety_Lemons.pptx")
-
+  base::print("11. figure_mean_by_variety_citrus_types_Otros_Ácaros.pptx")
 
