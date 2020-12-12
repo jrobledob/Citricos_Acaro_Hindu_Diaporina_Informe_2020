@@ -6,7 +6,8 @@ library(ggplotify)
 library(tidyverse)
 library(lubridate)
 
-###Ácaro Hindú
+
+#Ácaro Hindú----
 #Reading the data
 acaro_BD<- read.csv2("./Data/BD_acaro_2020.csv", header = T, encoding = "UTF-8")
 #Filtering acaro_BD according to date. All data obtained from october 8 2019 to present
@@ -201,27 +202,21 @@ read_pptx() %>%
 
 
 
+#Otros Ácaros----
 
-
-
-##Otros Ácaros
 #Get mean values per citrus type and sample (date). Contongency table
 acaro_2020$OTROS.ACAROS<- as.numeric(as.character(acaro_2020$OTROS.ACAROS))
 mean_by_citrus_type<- as.data.frame(table(acaro_2020$OTROS.ACAROS, acaro_2020$CULTIVAR, acaro_2020$Fecha))
 #set names of mean_by_citrus_type
 names(mean_by_citrus_type)<- c("Severidad", "Cultivar", "Fecha", "Frecuencia")
 mean_by_citrus_type$Fecha<- as.Date(mean_by_citrus_type$Fecha)
-
+#It graficates by month due to excesive data
 mean_by_citrus_type2 <- mean_by_citrus_type %>% 
-  group_by(FECHA = floor_date(Fecha, unit = "month"))%>%
-  summarize(Frecuencia = sum(Frecuencia),  Severidad= Severidad, Cultivar=
-              Cultivar)
-
-
-
-
+  group_by(FECHA = floor_date(Fecha, unit = "month"), Severidad, Cultivar) %>%
+  summarise(sum(Frecuencia))
+names(mean_by_citrus_type2)<- c("Fecha","Severidad", "Cultivar","Frecuencia Acumulada por Mes")
 #Figure
-figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type2, aes(x=Fecha, y=Frecuencia, group=Cultivar, fill=Cultivar, alpha=Severidad)) + 
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type2, aes(x=Fecha, y=`Frecuencia Acumulada por Mes`, group=Cultivar, fill=Cultivar, alpha=Severidad)) + 
       geom_bar(stat="identity",position="dodge", colour="black") +
       scale_alpha_manual(values=c(0,0.25, 0.5, 0.75, 1))
 #save as PPT
@@ -231,3 +226,24 @@ read_pptx() %>%
   ph_with(p_dml, ph_location()) %>%
   base::print("11. figure_mean_by_variety_citrus_types_Otros_Ácaros.pptx")
 
+#Get mean values per rootstock (date). Contongency table
+acaro_2020$OTROS.ACAROS<- as.numeric(as.character(acaro_2020$OTROS.ACAROS))
+mean_by_citrus_type<- as.data.frame(table(acaro_2020$OTROS.ACAROS, acaro_2020$PORTAINJERTO, acaro_2020$Fecha))
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Severidad", "Portainjerto", "Fecha", "Frecuencia")
+mean_by_citrus_type$Fecha<- as.Date(mean_by_citrus_type$Fecha)
+#It graficates by month due to excesive data
+mean_by_citrus_type2 <- mean_by_citrus_type %>% 
+  group_by(FECHA = floor_date(Fecha, unit = "month"), Severidad, Portainjerto) %>%
+  summarise(sum(Frecuencia))
+names(mean_by_citrus_type2)<- c("Fecha","Severidad", "Portainjerto","Frecuencia Acumulada por Mes")
+#Figure
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type2, aes(x=Fecha, y=`Frecuencia Acumulada por Mes`, group=Portainjerto, fill=Portainjerto, alpha=Severidad)) + 
+  geom_bar(stat="identity",position="dodge", colour="black") +
+  scale_alpha_manual(values=c(0,0.25, 0.5, 0.75, 1))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("12. figure_mean_by_variety_rootstock_Otros_Ácaros.pptx")
