@@ -247,3 +247,286 @@ read_pptx() %>%
   add_slide() %>%
   ph_with(p_dml, ph_location()) %>%
   base::print("12. figure_mean_by_variety_rootstock_Otros_Ácaros.pptx")
+
+
+#Diaphorina Citri----
+#Reading the data
+D_citri_BD<- read.csv2("./Data/BD Campo 16 Var Citricos_F2_2017 -2020.csv", header = T, encoding = "UTF-8")
+D_citri_BD<- D_citri_BD[,1:14]
+colnames(D_citri_BD)[1]<- "DIA"
+#Filtering acaro_BD according to date. All data obtained from october 8 2019 to present
+#and "evaluado"== B are selected
+D_citri_2020<- D_citri_BD %>%
+  filter(MUESTREO>="M69")
+##Figure by citrus type
+#Set "Fecha" up
+D_citri_2020$Fecha<- as.Date(paste(D_citri_2020$AÑO,D_citri_2020$MES,D_citri_2020$DIA, sep="-"))
+
+##EGGS
+#Get mean values per citrus type and sample (date). Contongency table
+D_citri_2020$`Huevos promedio por Brote`<- D_citri_2020$HUEVOS/D_citri_2020$BROTES.EVALUADOS
+mean_by_citrus_type<- aggregate(D_citri_2020$`Huevos promedio por Brote`, list(D_citri_2020$CULTIVAR, D_citri_2020$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Cultivar", "Fecha", "Huevos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Huevos promedio por Brote`, group=Cultivar))+
+  geom_line(aes(linetype=Cultivar))+
+  geom_point(aes(shape=Cultivar))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("13. figure_mean_by_citrus_type_D_citri_EGGS.pptx")
+
+
+#Get mean values per Rootstock and sample (date). Contongency table
+mean_by_citrus_type<- aggregate(D_citri_2020$`Huevos promedio por Brote`, list(D_citri_2020$PORTAINJERTO, D_citri_2020$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Portainjerto", "Fecha", "Huevos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Huevos promedio por Brote`, group=Portainjerto))+
+  geom_line(aes(linetype=Portainjerto))+
+  geom_point(aes(shape=Portainjerto))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("14. figure_mean_by_rootstock_D_citri_EGGS.pptx")
+
+
+#Get mean values per Variety and sample (date). Contongency table
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Naranja")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Huevos promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Huevos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Huevos promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("15. figure_mean_by_Oranges_D_citri_EGGS.pptx")
+#Tangerines
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Mandarina")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Huevos promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Huevos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Huevos promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("16. figure_mean_by_Tangerines_D_citri_EGGS.pptx")
+#Lemon
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Limón")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Huevos promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Huevos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Huevos promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("17. figure_mean_by_Lemon_D_citri_EGGS.pptx")
+
+##inmatures
+#Get mean values per citrus type and sample (date). Contongency table
+D_citri_2020$NINFAS<- as.numeric(D_citri_2020$NINFAS)
+D_citri_2020$`Ninfas promedio por Brote`<- D_citri_2020$NINFAS/D_citri_2020$BROTES.EVALUADOS
+mean_by_citrus_type<- aggregate(D_citri_2020$`Ninfas promedio por Brote`, list(D_citri_2020$CULTIVAR, D_citri_2020$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Cultivar", "Fecha", "Ninfas promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Ninfas promedio por Brote`, group=Cultivar))+
+  geom_line(aes(linetype=Cultivar))+
+  geom_point(aes(shape=Cultivar))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("18. figure_mean_by_citrus_type_D_citri_INMATURES.pptx")
+
+
+#Get mean values per Rootstock and sample (date). Contongency table
+mean_by_citrus_type<- aggregate(D_citri_2020$`Ninfas promedio por Brote`, list(D_citri_2020$PORTAINJERTO, D_citri_2020$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Portainjerto", "Fecha", "Ninfas promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Ninfas promedio por Brote`, group=Portainjerto))+
+  geom_line(aes(linetype=Portainjerto))+
+  geom_point(aes(shape=Portainjerto))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("19. figure_mean_by_rootstock_D_citri_INMATURES.pptx")
+
+
+#Get mean values per Variety and sample (date). Contongency table
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Naranja")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Ninfas promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Ninfas promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Ninfas promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("20. figure_mean_by_Oranges_D_citri_INMATURES.pptx")
+#Tangerines
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Mandarina")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Ninfas promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Ninfas promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Ninfas promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("21. figure_mean_by_Tangerines_D_citri_INMATURES.pptx")
+#Lemon
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Limón")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Ninfas promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Ninfas promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Ninfas promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("22. figure_mean_by_Lemon_D_citri_INMATURES.pptx")
+
+
+##ADULTS
+#Get mean values per citrus type and sample (date). Contongency table
+D_citri_2020$ADULTOS<- as.numeric(D_citri_2020$ADULTOS)
+D_citri_2020$`Adultos promedio por Brote`<- D_citri_2020$ADULTOS/D_citri_2020$BROTES.EVALUADOS
+mean_by_citrus_type<- aggregate(D_citri_2020$`Adultos promedio por Brote`, list(D_citri_2020$CULTIVAR, D_citri_2020$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Cultivar", "Fecha", "Adultos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Adultos promedio por Brote`, group=Cultivar))+
+  geom_line(aes(linetype=Cultivar))+
+  geom_point(aes(shape=Cultivar))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("23. figure_mean_by_citrus_type_D_citri_ADULTS.pptx")
+
+
+#Get mean values per Rootstock and sample (date). Contongency table
+mean_by_citrus_type<- aggregate(D_citri_2020$`Adultos promedio por Brote`, list(D_citri_2020$PORTAINJERTO, D_citri_2020$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Portainjerto", "Fecha", "Adultos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Adultos promedio por Brote`, group=Portainjerto))+
+  geom_line(aes(linetype=Portainjerto))+
+  geom_point(aes(shape=Portainjerto))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("24. figure_mean_by_rootstock_D_citri_ADULTS.pptx")
+
+
+#Get mean values per Variety and sample (date). Contongency table
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Naranja")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Adultos promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Adultos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Adultos promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("25. figure_mean_by_Oranges_D_citri_ADULTS.pptx")
+#Tangerines
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Mandarina")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Adultos promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Adultos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Adultos promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("26. figure_mean_by_Tangerines_D_citri_ADULTS.pptx")
+#Lemon
+mean_by_citrus_type<- D_citri_2020%>%
+  filter(CULTIVAR=="Limón")
+mean_by_citrus_type<- aggregate(mean_by_citrus_type$`Adultos promedio por Brote`, list(mean_by_citrus_type$VARIEDAD, mean_by_citrus_type$Fecha), mean, na.rm=T)
+#set names of mean_by_citrus_type
+names(mean_by_citrus_type)<- c("Variedad", "Fecha", "Adultos promedio por Brote")
+figure_mean_by_citrus_type<- ggplot(mean_by_citrus_type, aes(x=Fecha, y=`Adultos promedio por Brote`, group=Variedad))+
+  geom_line(aes(color=Variedad))+
+  geom_point(aes(color=Variedad))+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45))
+#save as PPT
+p_dml <-dml(ggobj = figure_mean_by_citrus_type)
+read_pptx() %>%
+  add_slide() %>%
+  ph_with(p_dml, ph_location()) %>%
+  base::print("27. figure_mean_by_Lemon_D_citri_ADULTS.pptx")
+
+
